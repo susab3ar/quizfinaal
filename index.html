@@ -1,184 +1,199 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-
-const questions = [
-  {
-    question: "Quando foi o nosso primeiro beijo depois de voltarmos a nos falar?",
-    options: [
-      "14 de fevereiro de 2025",
-      "15 de fevereiro de 2025", // Resposta Correta (índice 1)
-      "16 de fevereiro de 2025",
-      "13 de fevereiro de 2025",
-    ],
-    correct: 1,
-  },
-  {
-    question: "Qual é a minha comida favorita?",
-    options: [
-      "Pizza",
-      "Hambúrguer",
-      "Parmegiana", // RESPOSTA CORRETA (índice 2)
-      "Macarrão",
-    ],
-    correct: 2,
-  },
-  {
-    question: "Qual o apelido carinhoso que eu mais gosto de ouvir de você?",
-    options: ["Dengo", // Resposta Correta (índice 0)
-    "Amor", "Princesa", "Vida"],
-    correct: 0,
-  },
-  {
-    question: "Qual foi o momento mais especial pra mim com você até hoje?",
-    options: [
-      "Nosso primeiro encontro",
-      "Quando tivemos uma conversa profunda sobre nossos sentimentos", // Resposta Correta (índice 1)
-      "Nosso primeiro almoço juntos",
-      "Quando viajamos juntos",
-    ],
-    correct: 1,
-  },
-  {
-    question: "Qual é a minha animação favorita?",
-    options: [
-      "Hora de Aventura", // Resposta Correta (índice 0)
-      "Rick & Morty",
-      "Bananas de Pijamas",
-      "Jovens Titãs",
-    ],
-    correct: 0,
-  },
-];
-
-const QuizApp = () => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
-  const [showFinalPage, setShowFinalPage] = useState(false);
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState(null); // Para controlar a opção selecionada na pergunta atual
-
-  const handleOptionClick = (index) => {
-    setSelectedOptionIndex(index); // Marca a opção clicada
-
-    if (index === questions[currentQuestion].correct) {
-      setScore(score + 1);
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O quanto você me conhece, Dengo</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #fce4ec; /* Rosa bem clarinho */
+      color: #4a148c; /* Roxo escuro para contraste */
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      line-height: 1.6;
+      box-sizing: border-box; /* Garante que padding e border não aumentem o tamanho total */
     }
+    h1 {
+      text-align: center;
+      color: #880e4f; /* Rosa escuro para títulos */
+      margin-bottom: 25px;
+    }
+    .question {
+      background: #fff; /* Fundo branco para as perguntas */
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
+      transition: transform 0.3s ease; /* Animação ao passar o mouse */
+    }
+    .question:hover {
+      transform: translateY(-5px); /* Efeito de "levantar" */
+    }
+    .question h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #ad1457; /* Rosa médio para perguntas */
+      font-size: 1.2em;
+    }
+    .options button {
+      display: block;
+      margin: 10px 0;
+      padding: 15px 20px;
+      width: 100%;
+      border: 1px solid #f8bbd0; /* Borda rosa claro */
+      background: #fcf4f7; /* Fundo mais claro que a borda */
+      color: #880e4f; /* Texto rosa escuro */
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left; /* Alinha texto à esquerda */
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      font-size: 1em;
+    }
+    .options button:hover:not(:disabled) {
+      background-color: #ffe0b2; /* Laranja clarinho ao passar o mouse */
+      transform: translateY(-2px);
+    }
+    .options button:disabled {
+      opacity: 0.7; /* Diminui a opacidade de botões desabilitados */
+      cursor: not-allowed;
+    }
+    .options button.correct {
+      background-color: #c8e6c9; /* Verde para correto */
+      border-color: #a5d6a7;
+    }
+    .options button.incorrect {
+      background-color: #ffcdd2; /* Vermelho para incorreto */
+      border-color: #ef9a9a;
+    }
+    #result {
+      display: none; /* Escondido por padrão */
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      margin-top: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+    #result h2 {
+      color: #ad1457;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+    }
+    #result img {
+      max-width: 80%; /* Ajusta o tamanho da imagem */
+      height: auto;
+      margin: 25px auto; /* Centraliza a imagem */
+      border-radius: 50%; /* Faz a imagem redonda */
+      border: 4px solid #f8bbd0; /* Borda fofa para a foto */
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.4); /* Brilho rosado */
+    }
+    #result p {
+      color: #4a148c;
+      font-size: 1.1em;
+      line-height: 1.8;
+      white-space: pre-wrap; /* Mantém quebras de linha no texto */
+      text-align: left; /* Alinha o texto à esquerda para leitura */
+    }
+  </style>
+</head>
+<body>
+  
+  <h1>Quanto você me conhece Dengo? 🤔</h1>
 
-    // Pequeno atraso para o usuário ver a seleção antes de ir para a próxima pergunta
-    setTimeout(() => {
-      if (currentQuestion + 1 < questions.length) {
-        setCurrentQuestion(currentQuestion + 1);
-        setSelectedOptionIndex(null); // Reseta para a próxima pergunta
-      } else {
-        // Verifica se o score é igual ao total de perguntas antes de mostrar a página final
-        if (score + (index === questions[currentQuestion].correct ? 1 : 0) === questions.length) {
-          // Adiciona 1 ao score se a última resposta for correta para a verificação final
-          setShowFinalPage(true);
-        } else {
-          // Se não acertou todas, pode redirecionar para uma página de "tente novamente"
-          alert("Ops! Você não acertou todas as perguntas. Tente novamente!"); // Ou outra mensagem
-          // Resetar o quiz ou ir para uma página de resultado de "não acertou todas"
-          setCurrentQuestion(0); // Reinicia o quiz se não acertou tudo
-          setScore(0);
-          setShowFinalPage(false);
-        }
-      }
-    }, 500); // Atraso de 0.5 segundos
-  };
-
-  return (
-    <div className="flex flex-col items-center justify-center h-screen bg-pink-100">
-      {showFinalPage ? (
-        <motion.div
-          className="relative flex flex-col items-center text-center bg-white rounded-2xl p-6 shadow-lg max-w-sm mx-4"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          {/* Animação de fundo (pode remover se não quiser) */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            animate={{ y: [0, -10, 0], scale: [1, 1.1, 1] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-          >
-            {/* Div bg-red-200 removida, pois pode ter sido um placeholder */}
-            {/* Pode adicionar confetes ou corações aqui */}
-          </motion.div>
-          <h1 className="text-3xl font-extrabold text-pink-600 mb-4 animate-pulse">
-            Parabéns por ter acertado todas, Dengo! 💖 {/* TEXTO FINAL AJUSTADO AQUI */}
-          </h1>
-          <img
-            src="/foto-do-casal.jpg" // CAMINHO CORRETO DA IMAGEM (na pasta 'public')
-            alt="Foto do casal"
-            className="w-40 h-40 rounded-full object-cover border-4 border-pink-300 shadow-md mt-4 mb-6"
-          />
-          <p className="text-gray-700 text-base leading-relaxed text-left">
-            Obrigada por ser esse homem incrível na minha vida. Por ser tão
-            incrível, carinhoso e paciente comigo, até nos momentos em que nem
-            eu consigo lidar comigo mesma.
-            <br /><br />
-            Você tem sido uma presença leve, firme e acolhedora, e eu percebo
-            isso em cada gesto seu. No jeito como me escuta, como se importa,
-            como me enxerga até quando eu mesma não me reconheço.
-            <br /><br />
-            A sua paciência tem sido uma ponte pra minha cura. E sua forma de
-            cuidar, mesmo quando não diz nada, me faz sentir segura. Nem sempre
-            é fácil, eu sei. Somos dois seres com histórias, dores, receios e
-            bagagens...
-            <br /><br />
-            Tem gente que passa pela vida da gente e nem deixa rastro. Mas tem
-            pessoas que chegam e aos poucos viram lar — e eu te sinto assim:
-            abrigo, afeto e verdade.
-            <br /><br />
-            Obrigada por cada detalhe. Pelo esforço. Pela escuta. Pelos
-            silêncios. Por estar do meu lado, não só nos dias fáceis, mas nos
-            dias em que tudo parece um caos. Por ser paz onde tudo já foi
-            barulho.
-            <br /><br />
-            Essa mensagem é só um pedacinho da minha gratidão. Mas espero que
-            ela te lembre do quanto você faz diferença. Você é especial. E eu
-            vejo isso em você todos os dias. 💞
-          </p>
-        </motion.div>
-      ) : (
-        <Card className="w-96 p-4"> {/* Adicionado p-4 para padding interno */}
-          <CardContent className="flex flex-col items-center">
-            {/* TEXTO INICIAL EM ITÁLICO ADICIONADO AQUI */}
-            <p className="text-xl text-pink-700 font-semibold italic mb-4">
-              O quanto você me conhece, Dengo? 🤔
-            </p>
-            <h2 className="text-xl font-semibold text-pink-600 mb-6 text-center">
-              {questions[currentQuestion].question}
-            </h2>
-            <div className="mt-4 space-y-3 w-full">
-              {questions[currentQuestion].options.map((option, index) => (
-                <motion.button
-                  key={index}
-                  className={`w-full p-4 text-left border border-pink-200 rounded-lg focus:outline-none
-                              ${selectedOptionIndex === index
-                                 ? (index === questions[currentQuestion].correct ? 'bg-green-200' : 'bg-red-200')
-                                 : 'bg-white hover:bg-pink-50'
-                              }
-                              ${selectedOptionIndex !== null ? 'pointer-events-none' : ''}
-                            `}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleOptionClick(index)}
-                  disabled={selectedOptionIndex !== null}
-                >
-                  {option}
-                </motion.button>
-              ))}
-            </div>
-            {/* Opcional: Contador de perguntas */}
-            <p className="text-sm text-gray-500 mt-6">
-              Pergunta {currentQuestion + 1} de {questions.length}
-            </p>
-          </CardContent>
-        </Card>
-      )}
+  <div class="question" id="q1">
+    <h3>1. Depois de a gente ter voltado a se falar, quando foi o nosso primeiro beijo?</h3>
+    <div class="options">
+      <button onclick="check(this, 'q1', false)">10 de fevereiro de 2025</button>
+      <button onclick="check(this, 'q1', false)">13 de fevereiro de 2025</button>
+      <button onclick="check(this, 'q1', true)">15 de fevereiro de 2025</button>
+      <button onclick="check(this, 'q1', false)">17 de fevereiro de 2025</button>
     </div>
-  );
-};
+  </div>
 
-export default QuizApp;
+  <div class="question" id="q2">
+    <h3>2. Qual é a minha comida favorita?</h3>
+    <div class="options">
+      <button onclick="check(this, 'q2', false)">Pizza</button>
+      <button onclick="check(this, 'q2', false)">Hambúrguer</button>
+      <button onclick="check(this, 'q2', true)">Parmegiana</button> <button onclick="check(this, 'q2', false)"> Feijão com goiabada </button>
+    </div>
+  </div>
+
+  <div class="question" id="q3">
+    <h3>3. Qual apelido carinhoso eu mais gosto de ouvir de você?</h3>
+    <div class="options">
+      <button onclick="check(this, 'q3', true)">Bebê</button>
+      <button onclick="check(this, 'q3', true)">Gatinha</button>
+      <button onclick="check(this, 'q3', true)">Dengo</button>
+      <button onclick="check(this, 'q3', true)">Princesa</button>
+    </div>
+  </div>
+
+  <div class="question" id="q4">
+    <h3>4. Qual foi o momento mais especial pra mim com você até hoje?</h3>
+    <div class="options">
+      <button onclick="check(this, 'q4', false)">Nosso primeiro beijo</button>
+      <button onclick="check(this, 'q4', false)">Quando viajamos juntos</button>
+      <button onclick="check(this, 'q4', false)">Quando a gente riu até chorar</button>
+      <button onclick="check(this, 'q4', true)">Quando tivemos uma conversa muito profunda sobre nossos sentimentos</button>
+    </div>
+  </div>
+
+  <div class="question" id="q5">
+    <h3>5. Qual é a minha animação favorita?</h3>
+    <div class="options">
+      <button onclick="check(this, 'q5', true)">Hora de Aventura</button> <button onclick="check(this, 'q5', false)">Rick & Morty</button>
+      <button onclick="check(this, 'q5', false)">Bananas de Pijamas</button>
+      <button onclick="check(this, 'q5', false)">Jovens Titãs</button>
+    </div>
+  </div>
+
+  <div id="result">
+    <h2>Parabéns por ter acertado todas, Dengo! 💖</h2> <img src="foto-do-casal.jpg" alt="Foto do casal">
+    <p>Obrigada por ser esse homem incrível na minha vida. Por ser tão incrível, carinhoso e paciente comigo, até nos momentos em que nem eu consigo lidar comigo mesma.</p>
+    <p>Você tem sido uma presença leve, firme e acolhedora, e eu percebo isso em cada gesto seu. No jeito como me escuta, como se importa, como me enxerga até quando eu mesma não me reconheço.</p>
+    <p>A sua paciência tem sido uma ponte pra minha cura. E sua forma de cuidar, mesmo quando não diz nada, me faz sentir segura. Nem sempre é fácil, eu sei. Somos dois seres com histórias, dores, receios e bagagens...</p>
+    <p>Tem gente que passa pela vida da gente e nem deixa rastro. Mas tem pessoas que chegam e aos poucos viram lar — e eu te sinto assim: abrigo, afeto e verdade.</p>
+    <p>Obrigada por cada detalhe. Pelo esforço. Pela escuta. Pelo silêncios. Por estar do meu lado, não só nos dias fáceis, mas nos dias em que tudo parece um caos. Por ser paz onde tudo já foi barulho.</p>
+    <p>Essa mensagem é só um pedacinho da minha gratidão. Mas espero que ela te lembre do quanto você faz diferença. Você é especial. E eu vejo isso em você todos os dias. 💞</p>
+  </div>
+
+  <script>
+    const answers = {
+      q1: null,
+      q2: null,
+      q3: null,
+      q4: null,
+      q5: null, // Adicionada a quinta pergunta ao objeto de respostas
+    };
+    let correctCount = 0;
+
+    function check(button, questionId, isCorrect) {
+      if (answers[questionId] !== null) {
+        return;
+      }
+
+      const buttons = document.querySelectorAll(`#${questionId} .options button`);
+      buttons.forEach(btn => btn.disabled = true);
+
+      button.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+      answers[questionId] = isCorrect;
+
+      if (isCorrect) {
+        correctCount++;
+      }
+
+      const allQuestionsAnswered = Object.values(answers).every(answer => answer !== null);
+
+      // Agora verifica se acertou TODAS as 5 perguntas
+      if (allQuestionsAnswered && correctCount === Object.keys(answers).length) {
+        document.getElementById('result').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
