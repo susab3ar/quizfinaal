@@ -19,10 +19,10 @@ const questions = [
     options: [
       "Pizza",
       "Hambúrguer",
-      "Parmegiana", // AGORA ESTA É A RESPOSTA CORRETA (índice 2)
+      "Parmegiana", // RESPOSTA CORRETA (índice 2)
       "Macarrão",
     ],
-    correct: 2, // AJUSTADO PARA O ÍNDICE DA "Parmegiana"
+    correct: 2,
   },
   {
     question: "Qual o apelido carinhoso que eu mais gosto de ouvir de você?",
@@ -77,10 +77,6 @@ const QuizApp = () => {
           setShowFinalPage(true);
         } else {
           // Se não acertou todas, pode redirecionar para uma página de "tente novamente"
-          // Ou simplesmente não mostrar a página final (mantendo na última pergunta)
-          // Para este caso, vamos mostrar a página final APENAS se acertar todas
-          // Caso contrário, o quiz simplesmente termina sem a mensagem especial.
-          // Você pode adicionar um else if aqui para uma mensagem de "não acertou todas"
           alert("Ops! Você não acertou todas as perguntas. Tente novamente!"); // Ou outra mensagem
           // Resetar o quiz ou ir para uma página de resultado de "não acertou todas"
           setCurrentQuestion(0); // Reinicia o quiz se não acertou tudo
@@ -95,7 +91,7 @@ const QuizApp = () => {
     <div className="flex flex-col items-center justify-center h-screen bg-pink-100">
       {showFinalPage ? (
         <motion.div
-          className="relative flex flex-col items-center text-center bg-white rounded-2xl p-6 shadow-lg max-w-sm mx-4" // Adicionado mx-4 para margem lateral em telas menores
+          className="relative flex flex-col items-center text-center bg-white rounded-2xl p-6 shadow-lg max-w-sm mx-4"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -110,10 +106,10 @@ const QuizApp = () => {
             {/* Pode adicionar confetes ou corações aqui */}
           </motion.div>
           <h1 className="text-3xl font-extrabold text-pink-600 mb-4 animate-pulse">
-            Parabéns por ter acertado todas gatinho! 💖
+            Parabéns por ter acertado todas, Dengo! 💖 {/* TEXTO FINAL AJUSTADO AQUI */}
           </h1>
           <img
-            src="/foto-do-casal.jpg" // CAMINHO CORRIGIDO! A imagem deve estar na pasta 'public'
+            src="/foto-do-casal.jpg" // CAMINHO CORRETO DA IMAGEM (na pasta 'public')
             alt="Foto do casal"
             className="w-40 h-40 rounded-full object-cover border-4 border-pink-300 shadow-md mt-4 mb-6"
           />
@@ -148,9 +144,9 @@ const QuizApp = () => {
       ) : (
         <Card className="w-96 p-4"> {/* Adicionado p-4 para padding interno */}
           <CardContent className="flex flex-col items-center">
-            {/* NOVO TEXTO ADICIONADO AQUI */}
-            <p className="text-lg text-pink-700 font-semibold italic mb-4">
-              O quanto você me conhece Dengo? 🤔 
+            {/* TEXTO INICIAL EM ITÁLICO ADICIONADO AQUI */}
+            <p className="text-xl text-pink-700 font-semibold italic mb-4">
+              O quanto você me conhece, Dengo? 🤔
             </p>
             <h2 className="text-xl font-semibold text-pink-600 mb-6 text-center">
               {questions[currentQuestion].question}
@@ -159,16 +155,16 @@ const QuizApp = () => {
               {questions[currentQuestion].options.map((option, index) => (
                 <motion.button
                   key={index}
-                  className={`w-full p-4 text-left border border-pink-200 rounded-lg focus:outline-none 
-                              ${selectedOptionIndex === index 
+                  className={`w-full p-4 text-left border border-pink-200 rounded-lg focus:outline-none
+                              ${selectedOptionIndex === index
                                  ? (index === questions[currentQuestion].correct ? 'bg-green-200' : 'bg-red-200')
                                  : 'bg-white hover:bg-pink-50'
                               }
-                              ${selectedOptionIndex !== null ? 'pointer-events-none' : ''} // Desabilita cliques adicionais na mesma pergunta
+                              ${selectedOptionIndex !== null ? 'pointer-events-none' : ''}
                             `}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleOptionClick(index)}
-                  disabled={selectedOptionIndex !== null} // Desabilita botões após a seleção
+                  disabled={selectedOptionIndex !== null}
                 >
                   {option}
                 </motion.button>
