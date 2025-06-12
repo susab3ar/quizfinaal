@@ -1,0 +1,188 @@
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+const questions = [
+  {
+    question: "Quando foi o nosso primeiro beijo depois de voltarmos a nos falar?",
+    options: [
+      "14 de fevereiro de 2025",
+      "15 de fevereiro de 2025", // Resposta Correta (índice 1)
+      "16 de fevereiro de 2025",
+      "13 de fevereiro de 2025",
+    ],
+    correct: 1,
+  },
+  {
+    question: "Qual é a minha comida favorita?",
+    options: [
+      "Pizza",
+      "Hambúrguer",
+      "Parmegiana", // AGORA ESTA É A RESPOSTA CORRETA (índice 2)
+      "Macarrão",
+    ],
+    correct: 2, // AJUSTADO PARA O ÍNDICE DA "Parmegiana"
+  },
+  {
+    question: "Qual o apelido carinhoso que eu mais gosto de ouvir de você?",
+    options: ["Dengo", // Resposta Correta (índice 0)
+    "Amor", "Princesa", "Vida"],
+    correct: 0,
+  },
+  {
+    question: "Qual foi o momento mais especial pra mim com você até hoje?",
+    options: [
+      "Nosso primeiro encontro",
+      "Quando tivemos uma conversa profunda sobre nossos sentimentos", // Resposta Correta (índice 1)
+      "Nosso primeiro almoço juntos",
+      "Quando viajamos juntos",
+    ],
+    correct: 1,
+  },
+  {
+    question: "Qual é a minha animação favorita?",
+    options: [
+      "Hora de Aventura", // Resposta Correta (índice 0)
+      "Rick & Morty",
+      "Bananas de Pijamas",
+      "Jovens Titãs",
+    ],
+    correct: 0,
+  },
+];
+
+const QuizApp = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showFinalPage, setShowFinalPage] = useState(false);
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(null); // Para controlar a opção selecionada na pergunta atual
+
+  const handleOptionClick = (index) => {
+    setSelectedOptionIndex(index); // Marca a opção clicada
+
+    if (index === questions[currentQuestion].correct) {
+      setScore(score + 1);
+    }
+
+    // Pequeno atraso para o usuário ver a seleção antes de ir para a próxima pergunta
+    setTimeout(() => {
+      if (currentQuestion + 1 < questions.length) {
+        setCurrentQuestion(currentQuestion + 1);
+        setSelectedOptionIndex(null); // Reseta para a próxima pergunta
+      } else {
+        // Verifica se o score é igual ao total de perguntas antes de mostrar a página final
+        if (score + (index === questions[currentQuestion].correct ? 1 : 0) === questions.length) {
+          // Adiciona 1 ao score se a última resposta for correta para a verificação final
+          setShowFinalPage(true);
+        } else {
+          // Se não acertou todas, pode redirecionar para uma página de "tente novamente"
+          // Ou simplesmente não mostrar a página final (mantendo na última pergunta)
+          // Para este caso, vamos mostrar a página final APENAS se acertar todas
+          // Caso contrário, o quiz simplesmente termina sem a mensagem especial.
+          // Você pode adicionar um else if aqui para uma mensagem de "não acertou todas"
+          alert("Ops! Você não acertou todas as perguntas. Tente novamente!"); // Ou outra mensagem
+          // Resetar o quiz ou ir para uma página de resultado de "não acertou todas"
+          setCurrentQuestion(0); // Reinicia o quiz se não acertou tudo
+          setScore(0);
+          setShowFinalPage(false);
+        }
+      }
+    }, 500); // Atraso de 0.5 segundos
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen bg-pink-100">
+      {showFinalPage ? (
+        <motion.div
+          className="relative flex flex-col items-center text-center bg-white rounded-2xl p-6 shadow-lg max-w-sm mx-4" // Adicionado mx-4 para margem lateral em telas menores
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          {/* Animação de fundo (pode remover se não quiser) */}
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            animate={{ y: [0, -10, 0], scale: [1, 1.1, 1] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+          >
+            {/* Div bg-red-200 removida, pois pode ter sido um placeholder */}
+            {/* Pode adicionar confetes ou corações aqui */}
+          </motion.div>
+          <h1 className="text-3xl font-extrabold text-pink-600 mb-4 animate-pulse">
+            Parabéns por ter acertado todas gatinho! 💖
+          </h1>
+          <img
+            src="/foto-do-casal.jpg" // CAMINHO CORRIGIDO! A imagem deve estar na pasta 'public'
+            alt="Foto do casal"
+            className="w-40 h-40 rounded-full object-cover border-4 border-pink-300 shadow-md mt-4 mb-6"
+          />
+          <p className="text-gray-700 text-base leading-relaxed text-left">
+            Obrigada por ser esse homem incrível na minha vida. Por ser tão
+            incrível, carinhoso e paciente comigo, até nos momentos em que nem
+            eu consigo lidar comigo mesma.
+            <br /><br />
+            Você tem sido uma presença leve, firme e acolhedora, e eu percebo
+            isso em cada gesto seu. No jeito como me escuta, como se importa,
+            como me enxerga até quando eu mesma não me reconheço.
+            <br /><br />
+            A sua paciência tem sido uma ponte pra minha cura. E sua forma de
+            cuidar, mesmo quando não diz nada, me faz sentir segura. Nem sempre
+            é fácil, eu sei. Somos dois seres com histórias, dores, receios e
+            bagagens...
+            <br /><br />
+            Tem gente que passa pela vida da gente e nem deixa rastro. Mas tem
+            pessoas que chegam e aos poucos viram lar — e eu te sinto assim:
+            abrigo, afeto e verdade.
+            <br /><br />
+            Obrigada por cada detalhe. Pelo esforço. Pela escuta. Pelos
+            silêncios. Por estar do meu lado, não só nos dias fáceis, mas nos
+            dias em que tudo parece um caos. Por ser paz onde tudo já foi
+            barulho.
+            <br /><br />
+            Essa mensagem é só um pedacinho da minha gratidão. Mas espero que
+            ela te lembre do quanto você faz diferença. Você é especial. E eu
+            vejo isso em você todos os dias. 💞
+          </p>
+        </motion.div>
+      ) : (
+        <Card className="w-96 p-4"> {/* Adicionado p-4 para padding interno */}
+          <CardContent className="flex flex-col items-center">
+            {/* NOVO TEXTO ADICIONADO AQUI */}
+            <p className="text-lg text-pink-700 font-semibold italic mb-4">
+              O quanto você me conhece Dengo? 🤔 
+            </p>
+            <h2 className="text-xl font-semibold text-pink-600 mb-6 text-center">
+              {questions[currentQuestion].question}
+            </h2>
+            <div className="mt-4 space-y-3 w-full">
+              {questions[currentQuestion].options.map((option, index) => (
+                <motion.button
+                  key={index}
+                  className={`w-full p-4 text-left border border-pink-200 rounded-lg focus:outline-none 
+                              ${selectedOptionIndex === index 
+                                 ? (index === questions[currentQuestion].correct ? 'bg-green-200' : 'bg-red-200')
+                                 : 'bg-white hover:bg-pink-50'
+                              }
+                              ${selectedOptionIndex !== null ? 'pointer-events-none' : ''} // Desabilita cliques adicionais na mesma pergunta
+                            `}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleOptionClick(index)}
+                  disabled={selectedOptionIndex !== null} // Desabilita botões após a seleção
+                >
+                  {option}
+                </motion.button>
+              ))}
+            </div>
+            {/* Opcional: Contador de perguntas */}
+            <p className="text-sm text-gray-500 mt-6">
+              Pergunta {currentQuestion + 1} de {questions.length}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+export default QuizApp;
